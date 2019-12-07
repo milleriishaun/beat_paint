@@ -7,11 +7,10 @@ import Name from "./Name";
 import randomColor from "randomcolor";
 
 export default function Paint() {
-  const [colors, setColors] = useState(null);
+  const [colors, setColors] = useState([]);
   const [activeColor, setActiveColor] = useState(null);
 
-  useEffect(getColors, []);
-
+  console.log("hello from paint");
   const getColors = () => {
     const baseColor = randomColor().slice(1);
     fetch(`https://www.thecolorapi.com/scheme?hex=${baseColor}&mode=monochrome`)
@@ -22,6 +21,8 @@ export default function Paint() {
       });
   };
 
+  useEffect(getColors, []);
+
   return (
     <header style={{ borderTop: `10px solid ${activeColor}` }}>
       <div className="app">
@@ -31,7 +32,7 @@ export default function Paint() {
         <ColorPicker
           colors={colors}
           activeColor={activeColor}
-          selActiveColor={setActiveColor}
+          setActiveColor={setActiveColor}
         />
       </div>
     </header>

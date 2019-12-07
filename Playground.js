@@ -9,6 +9,7 @@ export default function Playground() {
     setColor(randomColor());
   }, []);
 
+  console.log("hello from playground");
   return (
     <div style={{ borderTop: `10px solid ${color}` }}>
       {count}

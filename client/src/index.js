@@ -1,14 +1,10 @@
-import Paint from "./components/Paint";
-import Playground from "./Playground";
+import App from "./App";
 import React from "react";
+import ReactDOM from "react-dom";
 
-//don't need Playground, just wan tto see if works
-
-export default function App() {
-  return (
-    <div>
-      idk paint
-      <Playground />
-    </div>
-  );
-}
+ReactDOM.render(
+  <div>
+    <App />
+  </div>,
+  document.getElementById("root")
+);

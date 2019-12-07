@@ -7,11 +7,12 @@ export default function ColorPicker({
   activeColor,
   setActiveColor,
 }) {
+  console.log("hello from ColorPicker");
   if (!colors.length) return null;
 
   return (
     <fieldset className="color-picker">
-      {colors.mapAgeCleaner((color, i) => (
+      {colors.map((color, i) => (
         <label key={i}>
           <input
             name="color"

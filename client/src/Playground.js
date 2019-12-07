@@ -8,7 +8,7 @@ export default function Playground() {
   useEffect(() => {
     setColor(randomColor());
   }, []);
-
+  console.log("hello from playground_inside");
   return (
     <div style={{ borderTop: `10px solid ${color}` }}>
       {count}
