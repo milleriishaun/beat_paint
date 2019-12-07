@@ -1,8 +1,8 @@
-BeatPaint
+# ![bob]
 
-# ![bob] BeatPaint
+# [BeatPaint](https://github.com/milleriishaun/beatpaint "view on github")
 
-###### _...paint to famous songs from the Bob Ross TV show._
+###### _...paint to the smooth beats of Bob Ross._
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
