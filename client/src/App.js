@@ -7,6 +7,10 @@ export default function App() {
     <div>
       <Paint />
       <Playground />
+      <audio autoplay="autoplay" controls>
+        <source src="https://imgur.com/pXwvhFP.mp4" type="audio/mp4"></source>
+        Your browser does not support the audio element.
+      </audio>
     </div>
   );
 }
