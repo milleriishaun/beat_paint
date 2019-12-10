@@ -4,7 +4,6 @@ const morgan = require("morgan");
 const path = require("path");
 const fetch = require("node-fetch");
 
-// app.set("port", process.env.PORT || 3001);
 const normalizePort = port => parseInt(port, 10);
 const PORT = normalizePort(process.env.PORT || 3001);
 
@@ -31,11 +30,11 @@ console.log(`working...`);
 //     });
 // });
 
-// Node/Express we'd like it to serve static assets in production
+// Node/Express to serve static assets in production
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client/build")));
 
-  // Handle React routing, return all requests to React app
+  // Forward all extra requests static build in client
   app.get("*", (req, res) => {
     // Send any other requests to the index.html page
     console.log(`hit Herokuproxy(${PORT}) or express proxy(port3001)`);
