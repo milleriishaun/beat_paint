@@ -1,6 +1,6 @@
 import "../App.css";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Canvas from "./Canvas";
 import ColorPicker from "./ColorPicker";
@@ -24,9 +24,14 @@ export default function Paint() {
 
   useEffect(getColors, []);
 
+  const headerRef = useRef({ offsetHeight: 0 }); // default value put on offsetHeight(in case null)
+
   return (
     <div className="app">
-      <header style={{ borderTop: `10px solid ${activeColor}` }}>
+      <header
+        ref={headerRef}
+        style={{ borderTop: `10px solid ${activeColor}` }}
+      >
         {/* <audio controls autoplay="1" loop="1"> */}
         <audio controls>
           <source src="https://imgur.com/pXwvhFP.mp4" type="audio/mp4"></source>
@@ -44,7 +49,10 @@ export default function Paint() {
         </div>
       </header>
       {activeColor && (
-        <Canvas color={activeColor} height={window.innerHeight} />
+        <Canvas
+          color={activeColor}
+          height={window.innerHeight - headerRef.current.offsetHeight}
+        />
       )}
     </div>
   );
