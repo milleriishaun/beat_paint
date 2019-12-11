@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Canvas from "./Canvas";
 import ColorPicker from "./ColorPicker";
 import Name from "./Name";
+import RefreshButton from "./RefreshButton";
 import randomColor from "randomcolor";
 
 export default function Paint() {
@@ -46,6 +47,7 @@ export default function Paint() {
             activeColor={activeColor}
             setActiveColor={setActiveColor}
           />
+          <RefreshButton />
         </div>
       </header>
       {activeColor && (
