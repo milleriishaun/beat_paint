@@ -20,6 +20,7 @@ export default function Playground() {
 
   // const calculate = useCallback(<Calculate />, [count]);
   // const cb = useCallback(num => console.log(num), [count]);
+  // Note: "useCallback" does not appear b/c it's the callback, not result
   useCallback(() => console.log("useCallback")); // returns the function
   useMemo(() => console.log("useMemo")); // returns the result of the function
 
