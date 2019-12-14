@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 
 export default function Name() {
-  const [name, setName] = useState("");
   console.log("hello from Name");
-  // const audio = new Audio(
-  //   "https://soundcloud.com/ravioliravioliravioli/bob-ross-theme-full"
-  // );
+  const [name, setName] = useState("");
 
   return (
     <label className="header-name">

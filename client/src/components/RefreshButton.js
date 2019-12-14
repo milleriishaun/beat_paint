@@ -1,9 +1,14 @@
-import React from "react";
+// import React, { useMemo, useRef } from "react";
 
-export default function RefreshButton({ cb }) {
-  return (
-    <button className="button-refresh-colors" onClick={cb}>
-      &#8634;
-    </button>
-  );
-}
+// const RefreshButton = React.memo(({ cb, num }) => {
+//   const renderCount = useRef(1);
+//   cb(num);
+//   return (
+//     <button className="button-refresh-colors" onClick={cb}>
+//       &#8634;
+//       {renderCount.current++}
+//     </button>
+//   );
+// });
+
+// export default RefreshButton;
