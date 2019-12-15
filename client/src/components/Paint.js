@@ -17,6 +17,19 @@ export default function Paint() {
   const [activeText, setActiveText] = useState([]);
   const [randomNumber, setRandomNumber] = useState([]);
 
+  RefreshButton.propTypes = {
+    cb: PropTypes.func.isRequired,
+    num: PropTypes.func.isRequired,
+    getColors: PropTypes.func.isRequired
+  };
+
+  RandButton.propTypes = {
+    aT: PropTypes.func.isRequired,
+    randomNumber: PropTypes.func.isRequired,
+    activeText: PropTypes.func.isRequired,
+    setRandomNumber: PropTypes.func.isRequired
+  };
+
   console.log("State refreshed");
 
   const getColors = () => {
@@ -48,7 +61,7 @@ export default function Paint() {
 
   useEffect(getAT, []);
 
-  const headerRef = useRef({ offsetHeight: 0 }); // default value put on offsetHeight(in case null)
+  const headerRef = useRef({ offsetHeight: 0 });
 
   const cb = useCallback(
     num => () => console.log(`num-activeColor: ${num}:${activeColor}`),
@@ -88,7 +101,7 @@ export default function Paint() {
             aT={aT}
             randomNumber={randomNumber}
             activeText={activeText}
-            getAT={getAT}
+            setRandomNumber={setRandomNumber}
           />
           <RefreshButton cb={cb} num={activeColor} getColors={getColors} />
         </div>
@@ -104,19 +117,6 @@ export default function Paint() {
   );
 }
 
-RefreshButton.propTypes = {
-  cb: PropTypes.func.isRequired,
-  num: PropTypes.func.isRequired,
-  getColors: PropTypes.func.isRequired
-};
-
-RandButton.propTypes = {
-  aT: PropTypes.func.isRequired,
-  randomNumber: PropTypes.func.isRequired,
-  activeText: PropTypes.func.isRequired,
-  getAT: PropTypes.func.isRequired
-};
-
 const RefreshButton = React.memo(({ cb, num, getColors }) => {
   const renderCount = useRef(1);
   cb(num);
@@ -128,15 +128,26 @@ const RefreshButton = React.memo(({ cb, num, getColors }) => {
   );
 });
 
-const RandButton = React.memo(({ aT, randomNumber, activeText, getAT }) => {
-  const renderActiveText = useRef(1);
-  aT(activeText);
-  return (
-    <button onClick={() => getAT()}>
-      {activeText}:{renderActiveText.current++}:{randomNumber}
-    </button>
-  );
-});
+const RandButton = React.memo(
+  ({ aT, randomNumber, activeText, setRandomNumber }) => {
+    const renderActiveText = useRef(1);
+    aT(activeText);
+    return (
+      <button
+        onClick={() =>
+          setRandomNumber(
+            Math.random()
+              .toString(36)
+              .replace(/[^a-z]+/g, "")
+              .substr(0, 5)
+          )
+        }
+      >
+        {activeText}:{renderActiveText.current++}:{randomNumber}
+      </button>
+    );
+  }
+);
 
 /*
 //Test deck
