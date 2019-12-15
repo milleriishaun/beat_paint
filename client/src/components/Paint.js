@@ -1,16 +1,11 @@
 import "../App.css";
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import Canvas from "./Canvas";
 import ColorPicker from "./ColorPicker";
 import Name from "./Name";
+import PropTypes from "prop-types";
 import WindowSize from "./WindowSize";
 import randomColor from "randomcolor";
 
@@ -37,20 +32,18 @@ export default function Paint() {
   useEffect(getColors, []);
 
   const getAT = () => {
-    const randomNumber = setRandomNumber(
+    setRandomNumber(
       Math.random()
         .toString(36)
         .replace(/[^a-z]+/g, "")
         .substr(0, 5)
     );
-    const activeText = setActiveText(
+    setActiveText(
       Math.random()
         .toString(36)
         .replace(/[^a-z]+/g, "")
         .substr(0, 3)
     );
-    console.log("randomNumber: ", randomNumber);
-    console.log("activeText: ", activeText);
   };
 
   useEffect(getAT, []);
@@ -110,6 +103,19 @@ export default function Paint() {
     </div>
   );
 }
+
+RefreshButton.propTypes = {
+  cb: PropTypes.func.isRequired,
+  num: PropTypes.func.isRequired,
+  getColors: PropTypes.func.isRequired
+};
+
+RandButton.propTypes = {
+  aT: PropTypes.func.isRequired,
+  randomNumber: PropTypes.func.isRequired,
+  activeText: PropTypes.func.isRequired,
+  getAT: PropTypes.func.isRequired
+};
 
 const RefreshButton = React.memo(({ cb, num, getColors }) => {
   const renderCount = useRef(1);
@@ -210,3 +216,5 @@ const RandButton = React.memo(({ activeText, setActiveText }) => {
   );
 });
 */
+
+// eslint-disable-next-line react/display-name
