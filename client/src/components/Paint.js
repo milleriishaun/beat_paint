@@ -27,7 +27,7 @@ const Paint = () => {
 
   const getColors = useCallback(() => {
     const baseColor = randomColor().slice(1);
-    fetch(`https://www.thecolorapi.com/scheme?hex=${baseColor}&mode=monochrome`)
+    fetch(`/api?baseColor=${baseColor}`)
       .then(res => res.json())
       .then(res => {
         setColors(res.colors.map(color => color.hex.value));

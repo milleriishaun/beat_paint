@@ -1,3 +1,5 @@
+/*global require, process, __dirname */
+/*eslint no-undef: "error"*/
 const express = require("express");
 const compression = require("compression");
 const morgan = require("morgan");
@@ -15,20 +17,21 @@ app.use(morgan("common"));
 
 console.log(`working...`);
 
-// app.get("/api", (req, res) => {
-//   const URL = `https://api.imgflip.com/get_memes`;
-//   fetch(URL)
-//     .then(function(response) {
-//       return response.json();
-//     })
-//     .then(function(data) {
-//       console.log("the data: ", data);
-//       res.send(JSON.stringify(data));
-//     })
-//     .catch(function(e) {
-//       console.log("error catch block response fetch: ", e);
-//     });
-// });
+app.get("/api", (req, res) => {
+  const baseColor = req.query.baseColor;
+  const URL = `https://www.thecolorapi.com/scheme?hex=${baseColor}&mode=monochrome`;
+  fetch(URL)
+    .then(response => {
+      return response.json();
+    })
+    .then(data => {
+      console.log("the data: ", data);
+      res.send(JSON.stringify(data));
+    })
+    .catch(e => {
+      console.log("error catch block response fetch: ", e);
+    });
+});
 
 // Node/Express to serve static assets in production
 if (process.env.NODE_ENV === "production") {
