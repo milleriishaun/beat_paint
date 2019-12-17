@@ -1,26 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function WindowSize() {
+export default function useWindowSize(cb) {
   const [[windowWidth, windowHeight], setWindowSize] = useState([
     window.innerWidth,
-    window.innerHeight,
+    window.innerHeight
   ]);
-  const [visible, setVisible] = useState(false);
+  console.log("hello from WindowSize custom hook");
 
   useEffect(() => {
-    let timeoutId;
     const handleResize = () => {
+      // Allow creating a new canvas upon resize
+      cb();
       setWindowSize([window.innerWidth, window.innerHeight]);
-      setVisible(true);
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => setVisible(false), 500);
     };
+
+    // Cleanup
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
-  return (
-    <div className={`window-size ${visible ? "" : "hidden"}`}>
-      {windowWidth} x {windowHeight}
-    </div>
-  );
+  }, [cb]);
+  return [windowWidth, windowHeight];
 }

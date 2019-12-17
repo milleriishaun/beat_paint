@@ -1,81 +1,76 @@
-import React, { Component } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-export default class Canvas extends Component {
-  constructor(props) {
-    super(props);
-    this.canvasRef = React.createRef();
-    this.handleMouseMove = this.handleMouseMove.bind(this);
-    this.handleResize = this.handleResize.bind(this);
-    this.startDrawing = this.startDrawing.bind(this);
-    this.stopDrawing = this.stopDrawing.bind(this);
-    this.state = {
-      drawing: false,
-      width: window.innerWidth,
-    };
-  }
+import PropTypes from "prop-types";
+import useWindowSize from "./WindowSize";
 
-  componentDidMount() {
-    this.ctx = this.canvasRef.current.getContext("2d");
-    window.addEventListener("resize", this.handleResize);
-  }
+const Canvas = React.memo(props => {
+  const [drawing, setDrawing] = useState(false);
+  const [width, setWidth] = useState(window.innerWidth);
+  const [height, setHeight] = useState(window.innerHeight);
 
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.handleResize);
-  }
+  const canvasRef = useRef();
+  const ctx = useRef();
 
-  handleMouseMove(e) {
+  const [windowWidth, windowHeight] = useWindowSize(() => {
+    setWidth(window.innerWidth);
+    setHeight(window.innerHeight);
+  });
+
+  useEffect(() => {
+    ctx.current = canvasRef.current.getContext("2d");
+  }, []);
+
+  console.log("hello from Canvas");
+
+  const handleMouseMove = e => {
     // Actual Coordinates
     const coords = [
-      e.clientX - this.canvasRef.current.offsetLeft,
-      e.clientY - this.canvasRef.current.offsetRight,
+      e.clientX - canvasRef.current.offsetLeft,
+      e.clientY - canvasRef.current.offsetTop
     ];
 
-    if (this.state.drawing) {
-      this.ctx.lineTo(...coords);
-      this.ctx.stroke();
+    if (drawing) {
+      ctx.current.lineTo(...coords);
+      ctx.current.stroke();
     }
+  };
 
-    if (this.props.handleMouseMove) {
-      this.props.handleMouseMove(...coords);
-    }
-  }
-
-  handleResize() {
-    this.setState({ width: window.innerWidth, height: window.innerHeight });
-  }
-
-  startDrawing(e) {
-    this.ctx.lineJoin = "round";
-    this.ctx.lineCap = "round";
-    this.ctx.lineWidth = 10;
-    this.ctx.strokeStyle = this.props.color;
-    this.ctx.beginPath();
+  const startDrawing = e => {
+    ctx.current.lineJoin = "round";
+    ctx.current.lineCap = "round";
+    ctx.current.lineWidth = 10;
+    ctx.current.strokeStyle = props.color;
+    ctx.current.beginPath();
     // Actual Coordinates
-    this.ctx.moveTo(
-      e.clientX - this.canvasRef.current.offsetLeft,
-      e.clientY - this.canvasRef.current.offsetRight
+    ctx.current.moveTo(
+      e.clientX - canvasRef.current.offsetLeft,
+      e.clientY - canvasRef.current.offsetTop
     );
-    this.setState({ drawing: true });
-  }
+    setDrawing(true);
+  };
 
-  stopDrawing() {
-    this.ctx.closePath();
-    this.setState({ drawing: false });
-  }
+  const stopDrawing = () => {
+    ctx.current.closePath();
+    setDrawing(false);
+  };
 
-  render() {
-    return (
-      <React.Fragment>
-        <canvas
-          ref={this.canvasRef}
-          width={this.props.width || this.state.width}
-          height={this.props.height || this.state.height}
-          onMouseDown={this.startDrawing}
-          onMouseUp={this.stopDrawing}
-          onMouseOut={this.stopDrawing}
-          onMouseMove={this.handleMouseMove}
-        />
-      </React.Fragment>
-    );
-  }
-}
+  return (
+    <canvas
+      ref={canvasRef}
+      width={props.width || width}
+      height={props.height || height}
+      onMouseDown={e => startDrawing(e)}
+      onMouseUp={() => stopDrawing()}
+      onMouseOut={() => stopDrawing()}
+      onMouseMove={e => handleMouseMove(e)}
+    />
+  );
+});
+
+export default Canvas;
+
+Canvas.propTypes = {
+  color: PropTypes.string.isRequired,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired
+};

@@ -5,34 +5,27 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import Canvas from "./Canvas";
 import ColorPicker from "./ColorPicker";
 import Name from "./Name";
-import PropTypes from "prop-types";
-import WindowSize from "./WindowSize";
+import RefreshButton from "./RefreshButton";
 import randomColor from "randomcolor";
+import useWindowSize from "./WindowSize";
 
-// import RefreshButton from "./RefreshButton";
+// import PropTypes from "prop-types";
 
-export default function Paint() {
+const Paint = () => {
   const [colors, setColors] = useState([]);
-  const [activeColor, setActiveColor] = useState(null);
-  const [activeText, setActiveText] = useState([]);
-  const [randomNumber, setRandomNumber] = useState([]);
+  const [activeColor, setActiveColor] = useState("");
+  const [visible, setVisible] = useState(false);
 
-  RefreshButton.propTypes = {
-    cb: PropTypes.func.isRequired,
-    num: PropTypes.func.isRequired,
-    getColors: PropTypes.func.isRequired
-  };
+  let timeoutId = useRef();
+  const [windowWidth, windowHeight] = useWindowSize(() => {
+    setVisible(true);
+    clearTimeout(timeoutId.current);
+    timeoutId.current = setTimeout(() => setVisible(false), 500);
+  });
 
-  RandButton.propTypes = {
-    aT: PropTypes.func.isRequired,
-    randomNumber: PropTypes.func.isRequired,
-    activeText: PropTypes.func.isRequired,
-    setRandomNumber: PropTypes.func.isRequired
-  };
+  console.log("Paint.js State refreshed");
 
-  console.log("State refreshed");
-
-  const getColors = () => {
+  const getColors = useCallback(() => {
     const baseColor = randomColor().slice(1);
     fetch(`https://www.thecolorapi.com/scheme?hex=${baseColor}&mode=monochrome`)
       .then(res => res.json())
@@ -40,54 +33,19 @@ export default function Paint() {
         setColors(res.colors.map(color => color.hex.value));
         setActiveColor(res.colors[0].hex.value);
       });
-  };
+  }, []);
 
   useEffect(getColors, []);
 
-  const getAT = () => {
-    setRandomNumber(
-      Math.random()
-        .toString(36)
-        .replace(/[^a-z]+/g, "")
-        .substr(0, 5)
-    );
-    setActiveText(
-      Math.random()
-        .toString(36)
-        .replace(/[^a-z]+/g, "")
-        .substr(0, 3)
-    );
-  };
-
-  useEffect(getAT, []);
-
   const headerRef = useRef({ offsetHeight: 0 });
 
-  const cb = useCallback(
-    num => () => console.log(`num-activeColor: ${num}:${activeColor}`),
-    [activeColor]
-  );
-
-  // demo
-  const aT = useCallback(
-    aTNum => {
-      console.log("activeTextHit in aT: ", aTNum);
-      console.log("activeText in aT: ", activeText);
-    },
-    [activeText]
-  );
-
-  // <audio controls autoplay="1" loop="1">
   return (
     <div className="app">
+      <h1 style={{ color: `${activeColor}` }}>&#10024; BeatPaint</h1>
       <header
         ref={headerRef}
         style={{ borderTop: `10px solid ${activeColor}` }}
       >
-        <audio controls>
-          <source src="https://imgur.com/pXwvhFP.mp4" type="audio/mp4"></source>
-          Your browser does not support the audio element.
-        </audio>
         <div className="app">
           <Name />
         </div>
@@ -97,135 +55,29 @@ export default function Paint() {
             activeColor={activeColor}
             setActiveColor={setActiveColor}
           />
-          <RandButton
-            aT={aT}
-            randomNumber={randomNumber}
-            activeText={activeText}
-            setRandomNumber={setRandomNumber}
-          />
-          <RefreshButton cb={cb} num={activeColor} getColors={getColors} />
+          <RefreshButton cb={getColors} />
         </div>
       </header>
+      {/* Canvas component gets replaced every time window.innerHeight or window.innerWidth changes */}
+      {/* Workaround would be save a history of the drawing, and reload onto the new, resized canvas */}
       {activeColor && (
         <Canvas
           color={activeColor}
-          height={window.innerHeight - headerRef.current.offsetHeight}
+          width={window.innerWidth - 30}
+          height={window.innerHeight - headerRef.current.offsetHeight - 180}
         />
       )}
-      <WindowSize />
-    </div>
-  );
-}
-
-const RefreshButton = React.memo(({ cb, num, getColors }) => {
-  const renderCount = useRef(1);
-  cb(num);
-  return (
-    <button className="button-refresh-colors" onClick={() => getColors()}>
-      &#8634;:
-      {renderCount.current++}
-    </button>
-  );
-});
-
-const RandButton = React.memo(
-  ({ aT, randomNumber, activeText, setRandomNumber }) => {
-    const renderActiveText = useRef(1);
-    aT(activeText);
-    return (
-      <button
-        onClick={() =>
-          setRandomNumber(
-            Math.random()
-              .toString(36)
-              .replace(/[^a-z]+/g, "")
-              .substr(0, 5)
-          )
-        }
-      >
-        {activeText}:{renderActiveText.current++}:{randomNumber}
-      </button>
-    );
-  }
-);
-
-/*
-//Test deck
-export default function Paint() {
-  const [colors, setColors] = useState([]);
-  const [activeColor, setActiveColor] = useState(null);
-  const [activeText, setActiveText] = useState([
-    Math.random()
-      .toString(36)
-      .replace(/[^a-z]+/g, "")
-      .substr(0, 5)
-  ]);
-
-  const getColors = () => {
-    const baseColor = randomColor().slice(1);
-    fetch(`https://www.thecolorapi.com/scheme?hex=${baseColor}&mode=monochrome`)
-      .then(res => res.json())
-      .then(res => {
-        setColors(res.colors.map(color => color.hex.value));
-        setActiveColor(res.colors[0].hex.value);
-        setActiveText(
-          Math.random()
-            .toString(36)
-            .replace(/[^a-z]+/g, "")
-            .substr(0, 5)
-        );
-      });
-  };
-
-  useEffect(getColors, []);
-
-  const cb = useCallback(num => console.log("refreshed num: ", num), [
-    activeColor
-  ]);
-
-  return (
-    <div className="app">
-      <div style={{ marginTop: 10 }}>
-        <ColorPicker
-          colors={colors}
-          activeColor={activeColor}
-          setActiveColor={setActiveColor}
-        />
-        <RandButton activeText={activeText} setActiveText={setActiveText} />
-        <RefreshButton cb={cb} num={activeColor} />
+      <div className={`window-size ${visible ? "" : "hidden"}`}>
+        Canvas Size: {windowWidth - 30} x{" "}
+        {windowHeight - headerRef.current.offsetHeight - 180}, Window Size:
+        {windowWidth} x {windowHeight}
       </div>
+      <audio controls autoPlay="1" loop="1">
+        <source src="https://imgur.com/pXwvhFP.mp4" type="audio/mp4"></source>
+        Your browser does not support the audio element.
+      </audio>
     </div>
   );
-}
+};
 
-const RefreshButton = React.memo(({ cb, num }) => {
-  const renderCount = useRef(1);
-  cb(num);
-  return (
-    <button className="button-refresh-colors" onClick={cb}>
-      &#8634;
-      {renderCount.current++}
-    </button>
-  );
-});
-
-const RandButton = React.memo(({ activeText, setActiveText }) => {
-  const renderActiveText = useRef(1);
-  return (
-    <button
-      onClick={() =>
-        setActiveText(
-          Math.random()
-            .toString(36)
-            .replace(/[^a-z]+/g, "")
-            .substr(0, 5)
-        )
-      }
-    >
-      {activeText}:{renderActiveText.current++}
-    </button>
-  );
-});
-*/
-
-// eslint-disable-next-line react/display-name
+export default Paint;

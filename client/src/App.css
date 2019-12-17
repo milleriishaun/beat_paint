@@ -107,4 +107,6 @@ canvas {
   flex: 1;
   overflow: hidden;
   cursor: crosshair;
+  margin-left: 10px;
+  border: 1px solid #000000;
 }
