@@ -1,8 +1,8 @@
 # ![bob]
 
-# [BeatPaint](https://github.com/milleriishaun/beatpaint "view on github")
+# [BeatPaint](https://beatpaint.herokuapp.com/ "view on Heroku")
 
-###### _...paint to the smooth beats of Bob Ross._
+###### _...paint like Bob Ross._
 
 This project is a minimal implementation of React Hooks.
 
